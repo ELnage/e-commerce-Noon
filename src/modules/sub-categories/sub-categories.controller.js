@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import {  Category , SubCategory } from "../../../DB/models/index.js";
+import {  Category , SubCategory , Brand } from "../../../DB/models/index.js";
 import { cloudinaryConfig, ErrorHandel, uploadFileToHost } from "../../utils/index.js";
 import { nanoid } from "nanoid";
 
@@ -133,7 +133,7 @@ export const deleteSubCategory = async (req, res, next) => {
   /**
    * @todo  delete the related brands , products from db
    */
-  // await Brand.deleteMany({ subCategoryId: subCategory._id });
+  await Brand.deleteMany({ subCategoryId: subCategory._id });
   res.status(200).json({
     message: "SubCategory deleted successfully",
     data: subCategory,
