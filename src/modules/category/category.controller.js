@@ -139,7 +139,7 @@ export const deleteCategory = async (req, res, next) => {
 
 
   // ToDo : delete data related to this category
-    // await SubCategory.deleteMany({ categoryId: category._id });
+    await SubCategory.deleteMany({ categoryId: category._id });
     // await Brand.deleteMany({ categoryId: category._id });
   res.status(200).json({
     message: "Category deleted successfully",
@@ -149,7 +149,7 @@ export const deleteCategory = async (req, res, next) => {
 
 
 export const getAllCategories = async (req, res, next) => {
-  const categories = await Category.find(); // ToDo : add pagination subCategory
+  const categories = await Category.find(); 
   res.status(200).json({
     message: "Categories found",
     data: categories,
