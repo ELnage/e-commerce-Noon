@@ -1,4 +1,4 @@
-import { Category  } from "../../../DB/models/index.js";
+import { Category , subcategory  } from "../../../DB/models/index.js";
 import { nanoid } from "nanoid";
 import { ErrorHandel, cloudinaryConfig } from "../../utils/index.js";
 import slugify from "slugify";
