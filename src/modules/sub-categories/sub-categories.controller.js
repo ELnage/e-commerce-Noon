@@ -1,19 +1,21 @@
 import slugify from "slugify";
-import {  Category , SubCategory , Brand } from "../../../DB/models/index.js";
-import { cloudinaryConfig, ErrorHandel, uploadFileToHost } from "../../utils/index.js";
+import { Category, SubCategory, Brand, Product } from "../../../DB/models/index.js";
+import {
+  cloudinaryConfig,
+  ErrorHandel,
+  uploadFileToHost,
+} from "../../utils/index.js";
 import { nanoid } from "nanoid";
 
 /**
- * @api {POST} /sub-categories/create  create a  new subCategory 
+ * @api {POST} /sub-categories/create  create a  new subCategory
  */
 export const createSubCategory = async (req, res, next) => {
   // find the category by id
   const { categoryId } = req.query;
   const category = await Category.findById(categoryId);
   if (!category) {
-    return next(
-      new ErrorHandel("Category not found", 404)
-    );
+    return next(new ErrorHandel("Category not found", 404));
   }
 
   // Generating category slug
@@ -26,9 +28,7 @@ export const createSubCategory = async (req, res, next) => {
 
   // Image
   if (!req.file) {
-    return next(
-      new ErrorClass("Please upload an image", 400)
-    );
+    return next(new ErrorClass("Please upload an image", 400));
   }
   const customId = nanoid(4);
   const { secure_url, public_id } = await uploadFileToHost({
@@ -54,8 +54,7 @@ export const createSubCategory = async (req, res, next) => {
     message: "Sub-Category created successfully",
     data: newSubCategory,
   });
-}
-
+};
 
 /**
  * @api {PUT} /sub-categories/update/:_id  Update a category
@@ -69,9 +68,7 @@ export const updateSubCategory = async (req, res, next) => {
   // find the sub-category by id
   const subCategory = await SubCategory.findById(_id).populate("categoryId");
   if (!subCategory) {
-    return next(
-      new ErrorHandel("subCategory not found", 404)
-    );
+    return next(new ErrorHandel("subCategory not found", 404));
   }
 
   // Update name and slug
@@ -105,7 +102,6 @@ export const updateSubCategory = async (req, res, next) => {
   });
 };
 
-
 /**
  * @api {DELETE} /sub-categories/delete/:_id  Delete a category
  */
@@ -113,27 +109,25 @@ export const deleteSubCategory = async (req, res, next) => {
   // get the sub-category id
   const { _id } = req.params;
   console.log(_id);
-  
+
   // find the sub-category by id
   const subCategory = await SubCategory.findByIdAndDelete(_id).populate(
     "categoryId"
   );
   // if not found return error
   if (!subCategory) {
-    return next(
-      new ErrorHandel("subCategory not found", 404)
-    );
+    return next(new ErrorHandel("subCategory not found", 404));
   }
   // delete the related image from cloudinary
   const subcategoryPath = `${process.env.UPLOADS_FOLDER}/Categories/${subCategory.categoryId.customId}/SubCategories/${subCategory.customId}`;
   await cloudinaryConfig().api.delete_resources_by_prefix(subcategoryPath);
   await cloudinaryConfig().api.delete_folder(subcategoryPath);
 
-
   /**
    * @todo  delete the related brands , products from db
    */
   await Brand.deleteMany({ subCategoryId: subCategory._id });
+  await Product.deleteMany({ subCategoryId: subCategory._id });
   res.status(200).json({
     message: "SubCategory deleted successfully",
     data: subCategory,
@@ -158,9 +152,7 @@ export const getSubCategory = async (req, res, next) => {
   );
 
   if (!subCategory) {
-    return next(
-      new ErrorHandel("sub Category not found", 404)
-    );
+    return next(new ErrorHandel("sub Category not found", 404));
   }
 
   res.status(200).json({
@@ -168,15 +160,13 @@ export const getSubCategory = async (req, res, next) => {
   });
 };
 
-
-
 /**
  * @api {GET} /sub-categories Get all categories paginated with it’s brands
-*/
+ */
 
 export const getAllSubCategories = async (req, res, next) => {
   const subCategories = await SubCategory.find().populate("categoryId"); // ToDo : add pagination brands
   res.status(200).json({
     data: subCategories,
   });
-}
+};

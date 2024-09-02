@@ -5,7 +5,7 @@ import {
   cloudinaryConfig,
   uploadFileToHost,
 } from "../../utils/index.js";
-import { Brand, SubCategory } from "../../../DB/models/index.js";
+import { Brand, Product, SubCategory } from "../../../DB/models/index.js";
 /**
  * @api {post} /brands/create  Create a brand
  */
@@ -81,7 +81,7 @@ export const updateBrand = async (req, res, next) => {
     .populate("categoryId")
     .populate("subCategoryId");
   if (!brand) {
-    return next(new ErrorClass("subCategory not found", 404));
+    return next(new ErrorHandel("subCategory not found", 404));
   }
 
   // Update name and slug
@@ -125,16 +125,16 @@ export const deleteBrand = async (req, res, next) => {
     .populate("categoryId")
     .populate("subCategoryId");
   if (!brand) {
-    return next(new ErrorClass("brand not found", 404));
+    return next(new ErrorHandel("brand not found", 404));
   }
   // delete the related image from cloudinary
   const brandPath = `${process.env.UPLOADS_FOLDER}/Categories/${brand.categoryId.customId}/SubCategories/${brand.subCategoryId.customId}/Brands/${brand.customId}`;
   await cloudinaryConfig().api.delete_resources_by_prefix(brandPath);
   await cloudinaryConfig().api.delete_folder(brandPath);
 
-  /**
-   * @todo  delete the related products from db
-   */
+  await Product.deleteMany({ brandId: brand._id });
+  
+  // send the response
   res.status(200).json({
     message: "brand deleted successfully",
   });
@@ -170,14 +170,13 @@ export const getBrand = async (req, res, next) => {
 };
 
 export const getAllBrands = async (req, res, next) => {
-  const {name , category , subCategory} = req.query
-  const queryFilter = {}
-  if(name) queryFilter.name = name
-  if(category) queryFilter.categoryId = category
-  if(subCategory) queryFilter.subCategoryId = subCategory
+  const { name, category, subCategory } = req.query;
+  const queryFilter = {};
+  if (name) queryFilter.name = name;
+  if (category) queryFilter.categoryId = category;
+  if (subCategory) queryFilter.subCategoryId = subCategory;
   const brands = await Brand.find(queryFilter); // ToDo : add pagination products
   res.status(200).json({
     data: brands,
   });
-}
-
+};
