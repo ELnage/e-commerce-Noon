@@ -143,4 +143,4 @@ export const getAllCategories = async (req, res, next) => {
     message: "Categories found",
     data: categories,
   });
-};
+
