@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken"
-import { ErrorHandel } from "../utils/error-class.utils.js"
+import jwt from "jsonwebtoken";
+import { ErrorHandel } from "../utils/error-class.utils.js";
 // import User from "../../DB/models/user.model.js";
-/** 
+/**
  * @returns {Function} middleware function
  * @description authentication middleware check if token is valid or not
  */
@@ -17,7 +17,7 @@ export const authenticationMiddleware = () => {
     // remove bearer from token
     const originalToken = token.split(" ")[1];
     let data;
-    try { 
+    try {
       // verify token to check if it is valid
       data = jwt.verify(originalToken, process.env.JWT_SECRET_SIGNIN);
     } catch (error) {

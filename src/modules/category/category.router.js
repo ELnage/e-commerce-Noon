@@ -1,7 +1,12 @@
 import { Router } from "express";
 import * as categoryController from "./category.controller.js";
-import * as  categorySchema from "./category.schema.js";
-import {errorHandler,multerHost,getDocument, validationMiddleware} from "../../middlewares/index.js";
+import * as categorySchema from "./category.schema.js";
+import {
+  errorHandler,
+  multerHost,
+  getDocument,
+  validationMiddleware,
+} from "../../middlewares/index.js";
 import { extensions } from "../../utils/index.js";
 import { Category } from "../../../DB/models/category.model.js";
 
@@ -17,7 +22,6 @@ categoryRouter.post(
 
 categoryRouter.get("/", errorHandler(categoryController.getCategory));
 
-
 categoryRouter.put(
   "/:_id",
   multerHost({ allowedExtensions: extensions.Images }).single("image"),
@@ -25,7 +29,6 @@ categoryRouter.put(
   getDocument(Category),
   errorHandler(categoryController.updateCategory)
 );
-
 
 categoryRouter.delete(
   "/:_id",

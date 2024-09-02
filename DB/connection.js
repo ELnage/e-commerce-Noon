@@ -1,4 +1,4 @@
-import  Mongoose  from "mongoose";
+import  Mongoose  from "./global-setup.js";
 
 export const db_connection = async () => {
   try {

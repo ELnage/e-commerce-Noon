@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { nanoid } from "nanoid";
 
 import { extensions } from "../utils/file-extenstions.utils.js";
-import { ErrorHandel } from './../utils/error-class.utils.js';
+import { ErrorHandel } from "./../utils/error-class.utils.js";
 
 export const multerMiddleware = ({
   filePath = "general",
